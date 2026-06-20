@@ -65,12 +65,12 @@ export default function HowToModal({ type, videoData, onClose }) {
         <div className="modal-body">
           {type === 'tags' && (
             <>
-              <Step num={1} title="Open YouTube Studio" desc='Go to <a href="https://studio.youtube.com" target="_blank" style="color:var(--accent)">studio.youtube.com</a> — sign in with your YouTube account' />
-              <Step num={2} title='Click "Content" in the left sidebar' desc="You'll see a list of all your uploaded videos" />
+              <Step num={1} title="Open YouTube Studio" desc={`Go to <a href="https://studio.youtube.com" target="_blank" style="color:var(--accent)">studio.youtube.com</a> — sign in with your YouTube account`} />
+              <Step num={2} title={`Click "Content" in the left sidebar`} desc="You'll see a list of all your uploaded videos" />
               <Step num={3} title="Find your video and click the pencil ✏️ icon" desc="This opens the video details editor" />
-              <Step num={4} title='Scroll down to the "Tags" section' desc={`If you don't see it, click "More options" — it's hidden there by default`} />
-              <Step num={5} title="Type each tag and press Enter or comma" desc="Add 15–20 tags. Mix short tags (your topic) with longer ones (questions people search)" />
-              <Step num={6} title='Click "Save" at the top right' desc="Done! Tags take effect within a few minutes" />
+              <Step num={4} title={`Scroll down to the "Tags" section`} desc={`If you don't see it, click "More options" — it's hidden there by default`} />
+              <Step num={5} title="Type each tag and press Enter or comma" desc="Add 15-20 tags. Mix short tags (your topic) with longer ones (questions people search)" />
+              <Step num={6} title={`Click "Save" at the top right`} desc="Done! Tags take effect within a few minutes" />
               <div className="modal-tip">💡 <strong>Use the AI Suggestions below</strong> — it already generated 15 ready-made tags for your video. Just copy them all and paste one by one in the Tags field.</div>
             </>
           )}

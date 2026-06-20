@@ -1,2 +1,21 @@
-node_modules/
+# Environment — never commit API keys
 .env
+.env.local
+.env.*.local
+
+# Dependencies (all levels)
+node_modules/
+**/node_modules/
+
+# Build output
+client/dist/
+client/.vite/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+

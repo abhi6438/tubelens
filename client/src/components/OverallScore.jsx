@@ -1,11 +1,10 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function getScoreClass(score) {
   if (score >= 7) return 'good'
   if (score >= 4) return 'ok'
   return 'bad'
 }
-
 function getScoreColor(score) {
   if (score >= 7) return '#22C55E'
   if (score >= 4) return '#EAB308'
@@ -15,49 +14,47 @@ function getScoreColor(score) {
 const TEXTS = {
   good: '🎉 Great job! A few tweaks and you\'ll grow fast.',
   ok: '📈 Good start! Fix the issues below to get more views.',
-  bad: '⚠ Needs work — follow the suggestions to improve your reach.'
+  bad: '⚠ Needs work — follow the suggestions below.'
 }
 
+// Ring circumference for r=36: 2π×36 ≈ 226
+const C = 226
+
 export default function OverallScore({ overall }) {
-  const circumference = 314
   const [displayNum, setDisplayNum] = useState(0)
-  const [offset, setOffset] = useState(circumference)
+  const [offset, setOffset] = useState(C)
   const cls = getScoreClass(overall)
   const color = getScoreColor(overall)
 
   useEffect(() => {
-    // Animate ring
-    const timer1 = setTimeout(() => {
-      setOffset(circumference - (overall / 10) * circumference)
-    }, 100)
-
-    // Animate number
-    let start = 0
-    const step = overall / (1000 / 16)
-    const timer2 = setInterval(() => {
-      start = Math.min(start + step, overall)
-      setDisplayNum(Math.round(start))
-      if (start >= overall) clearInterval(timer2)
+    const t1 = setTimeout(() => setOffset(C - (overall / 10) * C), 120)
+    let n = 0
+    const step = overall / (900 / 16)
+    const t2 = setInterval(() => {
+      n = Math.min(n + step, overall)
+      setDisplayNum(Math.round(n))
+      if (n >= overall) clearInterval(t2)
     }, 16)
-
-    return () => { clearTimeout(timer1); clearInterval(timer2) }
+    return () => { clearTimeout(t1); clearInterval(t2) }
   }, [overall])
 
   return (
     <div className="overall-wrap">
-      <div className="overall-label">Overall Score</div>
       <div className="overall-ring">
-        <svg width="120" height="120" viewBox="0 0 120 120">
-          <circle className="bg-circle" cx="60" cy="60" r="50" />
+        <svg width="90" height="90" viewBox="0 0 90 90">
+          <circle className="bg-circle" cx="45" cy="45" r="36" />
           <circle
             className="fg-circle"
-            cx="60" cy="60" r="50"
+            cx="45" cy="45" r="36"
             style={{ stroke: color, strokeDashoffset: offset }}
           />
         </svg>
         <div className="overall-number" style={{ color }}>{displayNum}</div>
       </div>
-      <div className="overall-text">{TEXTS[cls]}</div>
+      <div className="overall-info">
+        <div className="overall-label">Overall Score</div>
+        <div className="overall-text">{TEXTS[cls]}</div>
+      </div>
     </div>
   )
 }

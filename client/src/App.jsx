@@ -39,18 +39,17 @@ export default function App() {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ videoData: vd })
       })
-      const analysis = await r2.json()
-      if (analysis.error) throw new Error(analysis.error)
+      const anal = await r2.json()
+      if (anal.error) throw new Error(anal.error)
 
       setVideoData(vd)
-      setAnalysis(analysis)
+      setAnalysis(anal)
       setStatus({ msg: '' })
 
-      // AI suggestions — non-blocking
       setSuggestionsLoading(true)
       fetch('/api/suggestions', {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ videoData: vd, scores: analysis.scores })
+        body: JSON.stringify({ videoData: vd, scores: anal.scores })
       })
         .then(r => r.json())
         .then(data => {
@@ -77,6 +76,8 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
+  const hasResults = videoData && analysis
+
   return (
     <>
       <Hero
@@ -85,23 +86,31 @@ export default function App() {
         loading={loading}
         status={status}
         onAnalyze={startAnalysis}
+        compact={hasResults}
       />
 
-      {videoData && analysis && (
-        <div className="results">
-          <VideoCard videoData={videoData} />
-          <OverallScore overall={analysis.overall} />
-          <div className="score-grid">
-            {Object.entries(analysis.scores).map(([key, data]) => (
-              <ScoreCard key={key} cardKey={key} data={data} onHowTo={setModalType} />
-            ))}
-          </div>
-          <AISuggestions
-            loading={suggestionsLoading}
-            error={suggestionsError}
-            suggestions={suggestions}
-          />
-          <button className="again-btn" onClick={reset}>↩ Analyze another video</button>
+      {hasResults && (
+        <div className="page-results">
+          {/* LEFT SIDEBAR — sticky on desktop */}
+          <aside className="results-sidebar">
+            <VideoCard videoData={videoData} />
+            <OverallScore overall={analysis.overall} />
+            <button className="again-btn" onClick={reset}>↩ Analyze another video</button>
+          </aside>
+
+          {/* RIGHT MAIN — scores + AI */}
+          <main className="results-main">
+            <div className="score-grid">
+              {Object.entries(analysis.scores).map(([key, data]) => (
+                <ScoreCard key={key} cardKey={key} data={data} onHowTo={setModalType} />
+              ))}
+            </div>
+            <AISuggestions
+              loading={suggestionsLoading}
+              error={suggestionsError}
+              suggestions={suggestions}
+            />
+          </main>
         </div>
       )}
 

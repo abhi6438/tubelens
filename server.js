@@ -5,7 +5,8 @@ const path = require('path');
 
 const app = express();
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve React build in production
+app.use(express.static(path.join(__dirname, 'dist')));
 
 // Extract video ID from any YouTube URL format
 function extractVideoId(url) {
@@ -242,6 +243,11 @@ app.get('/api/status', (req, res) => {
     youtube: !!process.env.YOUTUBE_API_KEY,
     ai: detectAI()
   });
+});
+
+// SPA fallback — serve React app for all non-API routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 const PORT = 3001;

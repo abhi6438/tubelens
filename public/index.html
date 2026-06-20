@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TubeLens — Know Why Your Video Isn't Growing</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #0A0F1E;
+  --card: #111827;
+  --card2: #1A2235;
+  --border: #1F2D45;
+  --yt: #FF0000;
+  --yt-soft: #FF4500;
+  --accent: #F97316;
+  --green: #22C55E;
+  --yellow: #EAB308;
+  --red: #EF4444;
+  --text: #F1F5F9;
+  --muted: #64748B;
+  --sub: #94A3B8;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* HERO */
+.hero {
+  text-align: center;
+  padding: 60px 20px 40px;
+  position: relative;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse, rgba(255,69,0,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--sub);
+  margin-bottom: 28px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.logo-icon {
+  width: 28px; height: 28px;
+  background: var(--yt);
+  border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-icon svg { width: 16px; height: 16px; fill: white; }
+
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -0.02em;
+}
+h1 span { color: var(--yt-soft); }
+
+.hero-sub {
+  font-size: 16px;
+  color: var(--sub);
+  max-width: 480px;
+  margin: 0 auto 36px;
+  line-height: 1.6;
+}
+
+/* URL INPUT */
+.input-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  position: relative;
+}
+.url-input {
+  width: 100%;
+  padding: 16px 160px 16px 20px;
+  font-size: 15px;
+  font-family: 'Inter', sans-serif;
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.url-input:focus { border-color: var(--yt-soft); }
+.url-input::placeholder { color: var(--muted); }
+.analyze-btn {
+  position: absolute;
+  right: 6px; top: 6px; bottom: 6px;
+  padding: 0 20px;
+  background: var(--yt-soft);
+  color: white;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.1s;
+  white-space: nowrap;
+}
+.analyze-btn:hover { opacity: 0.9; }
+.analyze-btn:active { transform: scale(0.98); }
+.analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.hint-text {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* STATUS BAR */
+.status-bar {
+  max-width: 640px;
+  margin: 14px auto 0;
+  font-size: 13px;
+  color: var(--sub);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+  justify-content: center;
+}
+.status-bar.error { color: var(--red); }
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--yt-soft);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* RESULTS */
+.results { display: none; max-width: 900px; margin: 40px auto; padding: 0 20px 60px; }
+
+/* VIDEO CARD */
+.video-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  display: flex;
+  gap: 16px;
+  margin-bottom: 28px;
+  align-items: flex-start;
+}
+.video-thumb {
+  width: 160px;
+  height: 90px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--card2);
+}
+.video-info { flex: 1; min-width: 0; }
+.video-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.video-meta { display: flex; gap: 16px; flex-wrap: wrap; }
+.meta-item { font-size: 13px; color: var(--sub); }
+.meta-item strong { color: var(--text); font-weight: 600; }
+
+/* OVERALL SCORE */
+.overall-wrap {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.overall-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.overall-ring {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 12px;
+}
+.overall-ring svg { transform: rotate(-90deg); }
+.overall-ring .bg-circle { fill: none; stroke: var(--card2); stroke-width: 8; }
+.overall-ring .fg-circle {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  stroke-dasharray: 314;
+  stroke-dashoffset: 314;
+  transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+.overall-number {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+}
+.overall-text { font-size: 14px; color: var(--sub); }
+
+/* SCORE GRID */
+.score-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.score-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  position: relative;
+  overflow: hidden;
+}
+.score-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 14px 14px 0 0;
+}
+.score-card.good::before { background: var(--green); }
+.score-card.ok::before { background: var(--yellow); }
+.score-card.bad::before { background: var(--red); }
+
+.score-icon { font-size: 22px; margin-bottom: 8px; }
+.score-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.score-number {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+.score-number.good { color: var(--green); }
+.score-number.ok { color: var(--yellow); }
+.score-number.bad { color: var(--red); }
+
+.score-bar-bg {
+  height: 4px;
+  background: var(--card2);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.score-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0%;
+  transition: width 1s cubic-bezier(0.4,0,0.2,1) 0.3s;
+}
+.score-bar-fill.good { background: var(--green); }
+.score-bar-fill.ok { background: var(--yellow); }
+.score-bar-fill.bad { background: var(--red); }
+
+.score-issues { list-style: none; }
+.score-issues li {
+  font-size: 12px;
+  color: var(--sub);
+  padding: 3px 0;
+  padding-left: 14px;
+  position: relative;
+  line-height: 1.5;
+}
+.score-issues li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.howto-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  background: rgba(249,115,22,0.1);
+  border: 1px solid rgba(249,115,22,0.25);
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.2s;
+}
+.howto-btn:hover { background: rgba(249,115,22,0.2); }
+
+/* MODAL */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalIn 0.2s ease;
+}
+@keyframes modalIn { from { opacity:0; transform: translateY(16px) scale(0.97); } to { opacity:1; transform: none; } }
+.modal-head {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.modal-head-icon { font-size: 24px; flex-shrink: 0; margin-top: 2px; }
+.modal-head-text { flex: 1; }
+.modal-head-text h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.modal-head-text p { font-size: 13px; color: var(--sub); }
+.modal-close {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  color: var(--sub);
+  width: 30px; height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: var(--text); }
+.modal-body {
+  overflow-y: auto;
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Steps inside modal */
+.modal-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.step-num {
+  width: 26px; height: 26px;
+  background: rgba(249,115,22,0.15);
+  color: var(--accent);
+  border-radius: 50%;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.step-content { flex: 1; }
+.step-content strong { color: var(--text); font-size: 13px; display: block; margin-bottom: 3px; }
+.step-content p { font-size: 12px; color: var(--sub); line-height: 1.6; }
+
+/* Copy template blocks */
+.copy-template {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--sub);
+  line-height: 1.7;
+  white-space: pre-wrap;
+  margin-top: 8px;
+  font-family: 'Inter', sans-serif;
+}
+.template-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+.modal-tip {
+  background: rgba(249,115,22,0.08);
+  border: 1px solid rgba(249,115,22,0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 12px;
+  color: var(--accent);
+  line-height: 1.6;
+}
+.modal-divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+.platform-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+/* AI SUGGESTIONS */
+.suggestions-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.suggestions-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.suggestions-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+}
+.ai-badge {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 20px;
+  background: rgba(249,115,22,0.15);
+  color: var(--accent);
+  font-weight: 600;
+}
+.suggestions-body { padding: 20px; display: flex; flex-direction: column; gap: 20px; }
+
+.suggestion-block {}
+.suggestion-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.title-option {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.title-option:hover { border-color: var(--yt-soft); }
+.copy-btn {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--border);
+  color: var(--sub);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: 'Inter', sans-serif;
+  transition: background 0.2s;
+}
+.copy-btn:hover { background: var(--yt-soft); color: white; }
+
+.tags-wrap { display: flex; flex-wrap: wrap; gap: 6px; }
+.tag-chip {
+  font-size: 12px;
+  padding: 5px 10px;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  color: var(--sub);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.tag-chip:hover { border-color: var(--yt-soft); color: var(--text); }
+
+.desc-block {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--sub);
+  white-space: pre-wrap;
+}
+
+.tip-block {
+  background: rgba(249,115,22,0.08);
+  border: 1px solid rgba(249,115,22,0.2);
+  border-radius: 10px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text);
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.tip-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+.copy-all-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--yt-soft);
+  color: white;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 4px;
+  transition: opacity 0.2s;
+}
+.copy-all-btn:hover { opacity: 0.9; }
+
+/* ANALYZE AGAIN */
+.again-btn {
+  display: block;
+  margin: 0 auto;
+  padding: 11px 28px;
+  background: transparent;
+  border: 1.5px solid var(--border);
+  color: var(--sub);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.again-btn:hover { border-color: var(--yt-soft); color: var(--text); }
+
+/* LOADING SKELETON */
+.skeleton-pulse {
+  background: linear-gradient(90deg, var(--card) 25%, var(--card2) 50%, var(--card) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+@media (max-width: 600px) {
+  .video-card { flex-direction: column; }
+  .video-thumb { width: 100%; height: 180px; }
+  .score-grid { grid-template-columns: 1fr 1fr; }
+  .url-input { padding-right: 20px; padding-bottom: 56px; }
+  .analyze-btn { right: 6px; top: auto; bottom: 6px; left: 6px; width: auto; }
+}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="logo">
+    <div class="logo-icon">
+      <svg viewBox="0 0 24 24"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>
+    </div>
+    TubeLens
+  </div>
+
+  <h1>Know exactly why your<br>video isn't <span>getting views</span></h1>
+  <p class="hero-sub">Paste your YouTube video link. Get a score card, fix list, and AI-powered suggestions — completely free.</p>
+
+  <div class="input-wrap">
+    <input type="text" class="url-input" id="url-input" placeholder="Paste your YouTube video URL here..." />
+    <button class="analyze-btn" id="analyze-btn" onclick="startAnalysis()">Analyze Video</button>
+  </div>
+  <p class="hint-text">Works with youtube.com, youtu.be, and YouTube Shorts</p>
+  <div class="status-bar" id="status-bar"></div>
+</div>
+
+<div class="results" id="results">
+
+  <!-- Video Info -->
+  <div class="video-card" id="video-card"></div>
+
+  <!-- Overall Score -->
+  <div class="overall-wrap">
+    <div class="overall-label">Overall Score</div>
+    <div class="overall-ring">
+      <svg width="120" height="120" viewBox="0 0 120 120">
+        <circle class="bg-circle" cx="60" cy="60" r="50"/>
+        <circle class="fg-circle" id="overall-ring-fg" cx="60" cy="60" r="50"/>
+      </svg>
+      <div class="overall-number" id="overall-number">0</div>
+    </div>
+    <div class="overall-text" id="overall-text"></div>
+  </div>
+
+  <!-- Score Cards -->
+  <div class="score-grid" id="score-grid"></div>
+
+  <!-- AI Suggestions -->
+  <div class="suggestions-wrap" id="suggestions-wrap" style="display:none">
+    <div class="suggestions-header">
+      <h2>AI Fix Suggestions</h2>
+      <span class="ai-badge">✨ AI Generated</span>
+    </div>
+    <div class="suggestions-body" id="suggestions-body">
+      <div style="text-align:center;padding:20px;color:var(--muted)">
+        <div class="spinner" style="margin:0 auto 10px"></div>
+        Generating suggestions...
+      </div>
+    </div>
+  </div>
+
+  <button class="again-btn" onclick="resetTool()">↩ Analyze another video</button>
+</div>
+
+<!-- HOW TO FIX MODAL -->
+<div class="modal-overlay" id="howto-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-head-icon" id="modal-icon"></div>
+      <div class="modal-head-text">
+        <h3 id="modal-title"></h3>
+        <p id="modal-subtitle"></p>
+      </div>
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<script>
+let currentVideoData = null;
+let currentScores = null;
+
+function setStatus(msg, isError) {
+  const el = document.getElementById('status-bar');
+  el.className = 'status-bar' + (isError ? ' error' : '');
+  el.innerHTML = msg;
+}
+
+function getScoreClass(score) {
+  if (score >= 7) return 'good';
+  if (score >= 4) return 'ok';
+  return 'bad';
+}
+
+function getScoreColor(score) {
+  if (score >= 7) return '#22C55E';
+  if (score >= 4) return '#EAB308';
+  return '#EF4444';
+}
+
+function animateNumber(el, target, duration) {
+  let start = 0;
+  const step = target / (duration / 16);
+  const timer = setInterval(() => {
+    start = Math.min(start + step, target);
+    el.textContent = Math.round(start);
+    if (start >= target) clearInterval(timer);
+  }, 16);
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('howto-overlay')) closeModalDirect();
+}
+function closeModalDirect() {
+  document.getElementById('howto-overlay').classList.remove('open');
+}
+
+function openHowToModal(type) {
+  const title = currentVideoData?.title || 'my video';
+  const url = currentVideoData ? `https://youtu.be/${currentVideoData.videoId}` : '[your video link]';
+
+  const overlay = document.getElementById('howto-overlay');
+  const icon = document.getElementById('modal-icon');
+  const modalTitle = document.getElementById('modal-title');
+  const modalSub = document.getElementById('modal-subtitle');
+  const body = document.getElementById('modal-body');
+
+  if (type === 'tags') {
+    icon.textContent = '🏷';
+    modalTitle.textContent = 'How to add tags to your video';
+    modalSub.textContent = 'Takes about 3 minutes. Do this right now.';
+    body.innerHTML = `
+      ${step(1, 'Open YouTube Studio', 'Go to <a href="https://studio.youtube.com" target="_blank" style="color:var(--accent)">studio.youtube.com</a> — sign in with your YouTube account')}
+      ${step(2, 'Click "Content" in the left sidebar', 'You\'ll see a list of all your uploaded videos')}
+      ${step(3, 'Find your video and click the pencil ✏️ icon', 'This opens the video details editor')}
+      ${step(4, 'Scroll down to the "Tags" section', 'If you don\'t see it, click "More options" — it\'s hidden there by default')}
+      ${step(5, 'Type each tag and press Enter or comma', 'Add 15–20 tags. Mix short tags (your topic) with longer ones (questions people search)')}
+      ${step(6, 'Click "Save" at the top right', 'Done! Tags take effect within a few minutes')}
+      <div class="modal-tip">💡 <strong>Use the AI Suggestions below</strong> — it already generated 15 ready-made tags for your video. Just copy them all and paste one by one in the Tags field.</div>
+    `;
+  }
+
+  if (type === 'sharing') {
+    const fbMsg = `Hey everyone! 👋\n\nI just uploaded a new video — "${title}" — and would love some feedback from this community.\n\nWould mean a lot if you checked it out! 🙏\n${url}`;
+    const redditMsg = `I made a video on this topic and would love your honest thoughts.\n\n"${title}"\n\n${url}\n\nStill learning — any feedback welcome!`;
+    const waMsg = `Hey! 👋 I just posted a new YouTube video and it would really mean a lot if you watched it.\n\n"${title}"\n${url}\n\nEven a like or comment helps so much, thank you! 🙏`;
+    const twitterMsg = `New video just dropped! 🎬\n\n"${title}"\n\nWould love your thoughts 👇\n${url}`;
+    const igCaption = `New video is live! 🎬 "${title}" — link in bio to watch!\n\nDrop a comment if this was helpful 👇`;
+
+    icon.textContent = '📣';
+    modalTitle.textContent = 'How to get more views by sharing';
+    modalSub.textContent = 'Post templates ready to copy — just paste and send';
+    body.innerHTML = `
+      <p style="font-size:13px;color:var(--sub);line-height:1.6">Share your video within the first <strong style="color:var(--text)">24 hours</strong> of posting — early views tell YouTube's algorithm your video is worth recommending.</p>
+
+      ${platform('Facebook Groups', '👥',
+        'Search Facebook for groups about your topic. Join 3–5 groups, read their rules, then post this:',
+        fbMsg)}
+
+      <div class="modal-divider"></div>
+
+      ${platform('Reddit', '🤖',
+        'Find a subreddit for your niche (e.g. r/DIY, r/Cooking, r/fitness). Read the rules — most allow video posts with a genuine title:',
+        redditMsg)}
+
+      <div class="modal-divider"></div>
+
+      ${platform('WhatsApp / Telegram', '💬',
+        'Send this to your personal contacts and group chats. People who know you are most likely to watch AND like:',
+        waMsg)}
+
+      <div class="modal-divider"></div>
+
+      ${platform('Twitter / X', '🐦',
+        'Post this as a tweet. Add 2–3 hashtags about your topic after it:',
+        twitterMsg)}
+
+      <div class="modal-divider"></div>
+
+      ${platform('Instagram Caption', '📸',
+        'Post a screenshot or short clip from your video. Add your YouTube link in your bio, then use this caption:',
+        igCaption)}
+
+      <div class="modal-tip">💡 <strong>Ask in the video too</strong> — at the 30-second mark say: <em>"If this helped, hit like — it takes 1 second and really helps me grow."</em></div>
+    `;
+  }
+
+  overlay.classList.add('open');
+}
+
+function step(num, title, desc) {
+  return `
+    <div class="modal-step">
+      <div class="step-num">${num}</div>
+      <div class="step-content">
+        <strong>${title}</strong>
+        <p>${desc}</p>
+      </div>
+    </div>`;
+}
+
+function platform(name, emoji, instruction, template) {
+  const id = 'tmpl-' + Math.random().toString(36).slice(2,7);
+  return `
+    <div>
+      <div class="platform-label">${emoji} ${name}</div>
+      <p style="font-size:12px;color:var(--sub);line-height:1.6;margin-bottom:6px">${instruction}</p>
+      <div class="copy-template" id="${id}">${template}</div>
+      <div class="template-actions">
+        <button class="copy-btn" onclick="copyText(document.getElementById('${id}').textContent, this)">Copy message</button>
+      </div>
+    </div>`;
+}
+
+function getHowToFix(key, data) {
+  if (key === 'tags' && data.score === 0) {
+    return `<button class="howto-btn" onclick="openHowToModal('tags')">📖 How to add tags — step by step</button>`;
+  }
+  if (key === 'engagement' && data.issues.some(i => i.includes('views'))) {
+    return `<button class="howto-btn" onclick="openHowToModal('sharing')">📣 How to get more views — copy-paste templates</button>`;
+  }
+  return '';
+}
+
+async function startAnalysis() {
+  const url = document.getElementById('url-input').value.trim();
+  if (!url) return setStatus('⚠ Please paste a YouTube video URL', true);
+
+  const btn = document.getElementById('analyze-btn');
+  btn.disabled = true;
+  document.getElementById('results').style.display = 'none';
+
+  try {
+    // Step 1 — fetch video
+    setStatus('<div class="spinner"></div> Fetching video data from YouTube...');
+    const r1 = await fetch('/api/fetch-video', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url })
+    });
+    const videoData = await r1.json();
+    if (videoData.error) throw new Error(videoData.error);
+    currentVideoData = videoData;
+
+    // Step 2 — analyze
+    setStatus('<div class="spinner"></div> Analyzing your video...');
+    const r2 = await fetch('/api/analyze', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ videoData })
+    });
+    const analysis = await r2.json();
+    if (analysis.error) throw new Error(analysis.error);
+    currentScores = analysis.scores;
+
+    setStatus('');
+    renderResults(videoData, analysis);
+
+    // Step 3 — AI suggestions (async, non-blocking)
+    fetchAISuggestions(videoData, analysis.scores);
+
+  } catch (err) {
+    setStatus('⚠ ' + err.message, true);
+  }
+  btn.disabled = false;
+}
+
+function renderResults(videoData, analysis) {
+  const results = document.getElementById('results');
+  results.style.display = 'block';
+
+  // Video card
+  const publishDate = new Date(videoData.publishedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  document.getElementById('video-card').innerHTML = `
+    ${videoData.thumbnail ? `<img class="video-thumb" src="${videoData.thumbnail}" alt="thumbnail">` : '<div class="video-thumb"></div>'}
+    <div class="video-info">
+      <div class="video-title" title="${videoData.title}">${videoData.title}</div>
+      <div class="video-meta">
+        <div class="meta-item">👁 <strong>${videoData.views.toLocaleString()}</strong> views</div>
+        <div class="meta-item">👍 <strong>${videoData.likes.toLocaleString()}</strong> likes</div>
+        <div class="meta-item">💬 <strong>${videoData.comments.toLocaleString()}</strong> comments</div>
+        <div class="meta-item">📅 ${publishDate}</div>
+        <div class="meta-item">🏷 <strong>${videoData.tags?.length || 0}</strong> tags</div>
+      </div>
+    </div>
+  `;
+
+  // Overall score ring
+  const overall = analysis.overall;
+  const circumference = 314;
+  const offset = circumference - (overall / 10) * circumference;
+  const ringEl = document.getElementById('overall-ring-fg');
+  ringEl.style.stroke = getScoreColor(overall);
+  setTimeout(() => { ringEl.style.strokeDashoffset = offset; }, 100);
+  const numEl = document.getElementById('overall-number');
+  numEl.style.color = getScoreColor(overall);
+  setTimeout(() => animateNumber(numEl, overall, 1000), 100);
+
+  const texts = { good: '🎉 Great job! A few tweaks and you\'ll grow fast.', ok: '📈 Good start! Fix the issues below to get more views.', bad: '⚠ Needs work — follow the suggestions to improve your reach.' };
+  document.getElementById('overall-text').textContent = texts[getScoreClass(overall)];
+
+  // Score cards
+  const icons = { title: '📝', description: '📄', tags: '🏷', thumbnail: '🖼', engagement: '📊' };
+  const names = { title: 'Title', description: 'Description', tags: 'Tags', thumbnail: 'Thumbnail', engagement: 'Engagement' };
+  const grid = document.getElementById('score-grid');
+  grid.innerHTML = Object.entries(analysis.scores).map(([key, data]) => {
+    const cls = getScoreClass(data.score);
+    const howTo = getHowToFix(key, data);
+    return `
+      <div class="score-card ${cls}">
+        <div class="score-icon">${icons[key]}</div>
+        <div class="score-name">${names[key]}</div>
+        <div class="score-number ${cls}">${data.score}<span style="font-size:16px;font-weight:400;color:var(--muted)">/10</span></div>
+        <div class="score-bar-bg"><div class="score-bar-fill ${cls}" style="width:${data.score * 10}%"></div></div>
+        <ul class="score-issues">${data.issues.slice(0, 3).map(i => `<li>${i}</li>`).join('')}</ul>
+        ${howTo}
+      </div>
+    `;
+  }).join('');
+
+  // Show suggestions area
+  document.getElementById('suggestions-wrap').style.display = 'block';
+
+  results.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function fetchAISuggestions(videoData, scores) {
+  try {
+    const r = await fetch('/api/suggestions', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ videoData, scores })
+    });
+    const data = await r.json();
+    if (data.error) throw new Error(data.error);
+    renderSuggestions(data);
+  } catch (err) {
+    document.getElementById('suggestions-body').innerHTML = `
+      <div style="color:var(--muted);font-size:13px;padding:10px 0">
+        ⚠ AI suggestions unavailable: ${err.message}
+      </div>`;
+  }
+}
+
+function renderSuggestions(data) {
+  const body = document.getElementById('suggestions-body');
+  body.innerHTML = `
+    ${data.titleOptions?.length ? `
+      <div class="suggestion-block">
+        <div class="suggestion-label">✏️ Better Title Options</div>
+        ${data.titleOptions.map((t, i) => `
+          <div class="title-option">
+            <span>${t}</span>
+            <button class="copy-btn" onclick="copyText('${t.replace(/'/g, "\\'")}', this)">Copy</button>
+          </div>
+        `).join('')}
+      </div>
+    ` : ''}
+
+    ${data.tags?.length ? `
+      <div class="suggestion-block">
+        <div class="suggestion-label">🏷 Suggested Tags <span style="color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">(click to copy)</span></div>
+        <div class="tags-wrap">
+          ${(Array.isArray(data.tags) ? data.tags : String(data.tags).split(',').map(t=>t.trim())).map(t => `<div class="tag-chip" onclick="copyText('${t}', this)">${t}</div>`).join('')}
+        </div>
+        <button class="copy-btn" style="margin-top:10px" onclick="copyText('${(Array.isArray(data.tags) ? data.tags : String(data.tags).split(',')).join(', ')}', this)">Copy all tags</button>
+      </div>
+    ` : ''}
+
+    ${data.descriptionOpening ? `
+      <div class="suggestion-block">
+        <div class="suggestion-label">📄 Better Description Opening</div>
+        <div class="desc-block" id="desc-text">${data.descriptionOpening}</div>
+        <button class="copy-btn" style="margin-top:8px" onclick="copyText(document.getElementById('desc-text').textContent, this)">Copy description</button>
+      </div>
+    ` : ''}
+
+    ${data.topTip ? `
+      <div class="suggestion-block">
+        <div class="suggestion-label">💡 Most Important Tip</div>
+        <div class="tip-block">
+          <div class="tip-icon">🚀</div>
+          <div>${data.topTip}</div>
+        </div>
+      </div>
+    ` : ''}
+  `;
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.style.background = 'var(--green)';
+    btn.style.color = 'white';
+    setTimeout(() => {
+      btn.textContent = orig;
+      btn.style.background = '';
+      btn.style.color = '';
+    }, 2000);
+  });
+}
+
+function resetTool() {
+  document.getElementById('url-input').value = '';
+  document.getElementById('results').style.display = 'none';
+  document.getElementById('status-bar').innerHTML = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Allow Enter key
+document.getElementById('url-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startAnalysis();
+});
+</script>
+</body>
+</html>

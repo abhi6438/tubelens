@@ -4,6 +4,7 @@ import VideoCard from './components/VideoCard'
 import OverallScore from './components/OverallScore'
 import ScoreCard from './components/ScoreCard'
 import AISuggestions from './components/AISuggestions'
+import BestTimeToPost from './components/BestTimeToPost'
 import HowToModal from './components/HowToModal'
 
 export default function App() {
@@ -105,6 +106,7 @@ export default function App() {
                 <ScoreCard key={key} cardKey={key} data={data} onHowTo={setModalType} />
               ))}
             </div>
+            <BestTimeToPost videoData={videoData} />
             <AISuggestions
               loading={suggestionsLoading}
               error={suggestionsError}

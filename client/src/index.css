@@ -662,6 +662,124 @@ h1 span { color: var(--yt-soft); }
   margin-bottom: 3px;
 }
 
+/* ─── BEST TIME TO POST ──────────────────────────────── */
+.btp-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+.btp-header {
+  padding: 14px 16px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border);
+}
+.btp-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+.btp-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(249,115,22,0.12);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Grid */
+.btp-grid {
+  display: grid;
+  grid-template-columns: 80px repeat(7, 1fr);
+  gap: 3px;
+  padding: 12px 14px 10px;
+}
+.btp-corner { /* empty top-left cell */ }
+.btp-day-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  text-align: center;
+  padding-bottom: 4px;
+  letter-spacing: 0.04em;
+}
+.btp-slot-label {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-right: 6px;
+}
+.btp-slot-label span:first-child {
+  font-size: 10.5px;
+  font-weight: 600;
+  color: var(--sub);
+}
+.btp-slot-sub {
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.btp-cell {
+  border-radius: 5px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s;
+  cursor: default;
+}
+.btp-cell:hover { transform: scale(1.15); z-index: 1; position: relative; }
+.btp-star { font-size: 10px; }
+
+/* Legend */
+.btp-legend {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px 10px;
+}
+.btp-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: var(--muted);
+}
+.btp-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+/* Recommendation tip */
+.btp-tip {
+  margin: 0 14px 14px;
+  background: rgba(249,115,22,0.07);
+  border: 1px solid rgba(249,115,22,0.18);
+  border-radius: 10px;
+  padding: 11px 13px;
+}
+.btp-tip-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.btp-tip-emoji { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.btp-tip-highlight {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+.btp-tip-reason {
+  font-size: 11.5px;
+  color: var(--sub);
+  line-height: 1.5;
+}
+
 /* ─── RESPONSIVE ─────────────────────────────────────── */
 
 /* Laptop / small desktop: tighten sidebar */

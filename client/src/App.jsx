@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { Analytics } from '@vercel/analytics/react'
 import Hero from './components/Hero'
 import VideoCard from './components/VideoCard'
 import OverallScore from './components/OverallScore'
@@ -121,6 +122,7 @@ export default function App() {
         videoData={videoData}
         onClose={() => setModalType(null)}
       />
+      <Analytics />
     </>
   )
 }

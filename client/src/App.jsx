@@ -6,6 +6,7 @@ import OverallScore from './components/OverallScore'
 import ScoreCard from './components/ScoreCard'
 import AISuggestions from './components/AISuggestions'
 import BestTimeToPost from './components/BestTimeToPost'
+import EnhancePanel from './components/EnhancePanel'
 import HowToModal from './components/HowToModal'
 
 export default function App() {
@@ -102,12 +103,26 @@ export default function App() {
 
           {/* RIGHT MAIN — scores + AI */}
           <main className="results-main">
+            <a
+              className="studio-banner"
+              href={`https://studio.youtube.com/video/${videoData.videoId}/edit`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>✏️ Fix all of this in YouTube Studio — no re-uploading needed</span>
+              <span className="studio-banner-arrow">Open Studio →</span>
+            </a>
             <div className="score-grid">
               {Object.entries(analysis.scores).map(([key, data]) => (
                 <ScoreCard key={key} cardKey={key} data={data} onHowTo={setModalType} />
               ))}
             </div>
             <BestTimeToPost videoData={videoData} />
+            <EnhancePanel
+              videoData={videoData}
+              suggestions={suggestions}
+              loading={suggestionsLoading}
+            />
             <AISuggestions
               loading={suggestionsLoading}
               error={suggestionsError}

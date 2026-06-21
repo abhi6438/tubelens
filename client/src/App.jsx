@@ -8,6 +8,7 @@ import AISuggestions from './components/AISuggestions'
 import BestTimeToPost from './components/BestTimeToPost'
 import EnhancePanel from './components/EnhancePanel'
 import ThumbnailCard from './components/ThumbnailCard'
+import ThumbnailBuilder from './components/ThumbnailBuilder'
 import HowToModal from './components/HowToModal'
 
 export default function App() {
@@ -124,6 +125,7 @@ export default function App() {
               suggestions={suggestions}
               loading={suggestionsLoading}
             />
+            <ThumbnailBuilder videoData={videoData} />
             <EnhancePanel
               videoData={videoData}
               suggestions={suggestions}

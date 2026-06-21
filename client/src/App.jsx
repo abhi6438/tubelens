@@ -7,6 +7,7 @@ import ScoreCard from './components/ScoreCard'
 import AISuggestions from './components/AISuggestions'
 import BestTimeToPost from './components/BestTimeToPost'
 import EnhancePanel from './components/EnhancePanel'
+import ThumbnailCard from './components/ThumbnailCard'
 import HowToModal from './components/HowToModal'
 
 export default function App() {
@@ -118,6 +119,11 @@ export default function App() {
               ))}
             </div>
             <BestTimeToPost videoData={videoData} />
+            <ThumbnailCard
+              videoData={videoData}
+              suggestions={suggestions}
+              loading={suggestionsLoading}
+            />
             <EnhancePanel
               videoData={videoData}
               suggestions={suggestions}

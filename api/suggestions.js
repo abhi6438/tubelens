@@ -21,6 +21,7 @@ Description (first 300 chars): "${videoData.description?.substring(0, 300)}"
 Tags: ${JSON.stringify(videoData.tags?.slice(0, 10))}
 Views: ${videoData.views}
 Likes: ${videoData.likes}
+Category ID: ${videoData.categoryId}
 
 SCORES:
 Title: ${scores.title.score}/10
@@ -33,6 +34,8 @@ Give me:
 2. Better tags (15 tags as comma separated list)
 3. A better description opening (first 3 lines only)
 4. One most important tip for this creator
+5. Three short punchy thumbnail text overlays (max 6 words each) that would make someone stop scrolling and click — match the video topic and category
+6. One sentence of thumbnail design advice specific to this video's category (what colors, style, should they show their face, etc.)
 
 Keep language simple — this is a beginner creator. Be specific, not generic.
 Respond in JSON format:
@@ -40,7 +43,9 @@ Respond in JSON format:
   "titleOptions": ["title1", "title2"],
   "tags": ["tag1", "tag2", ...],
   "descriptionOpening": "...",
-  "topTip": "..."
+  "topTip": "...",
+  "thumbnailTextOptions": ["text1", "text2", "text3"],
+  "thumbnailDesignTip": "..."
 }`;
 
   try {
